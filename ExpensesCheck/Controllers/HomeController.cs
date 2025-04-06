@@ -27,13 +27,50 @@ namespace ExpensesCheck.Controllers
             return View();
         }
 
-        public IActionResult Expenses() => View();
+        public IActionResult Expenses()
+        {
+            // for showing sum of all expenses we can use ViewBag, but I use sum at the view
+            //ViewBag.Expenses = _context.Expenses.Sum();
+            return View(_context.Expenses.ToList());
+        }
 
-        public IActionResult CreateEditExpense() => View();
+        public IActionResult CreateEditExpense(int? id)
+        {
+            if (id != null)
+            {
+                // get an object from the db for editing
+                var expenseObject = _context.Expenses.FirstOrDefault(expense => expense.Id == id);
+                return View(expenseObject);
+            }
+
+            return View();
+        }
+
+        public IActionResult DeleteExpense(int id)
+        {
+            var expenseInDb = _context.Expenses.FirstOrDefault(expense => expense.Id == id);
+            if (expenseInDb != null)
+            {
+                _context.Expenses.Remove(expenseInDb);
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction("Expenses");
+        }
 
         public IActionResult CreateEditExpenseForm(Expense model)
         {
-            _context.Expenses.Add(model);
+            if (model.Id == 0)
+            {
+                // Create
+                _context.Expenses.Add(model);
+            }
+            else
+            {
+                // Edit
+                _context.Expenses.Update(model);
+            }
+
             _context.SaveChanges();
 
             return RedirectToAction("Expenses");

@@ -10,8 +10,7 @@
 </div>
 
 <form asp-action="CreateEditExpenseForm">
-    <label>Id</label>
-    <input asp-for="Id" type="number" class="form-control" placeholder="0" />
+    <input hidden asp-for="Id" type="number" class="form-control" placeholder="0" />
 
     <label class="mt-4">Value ($)</label>
     <input asp-for="Value" type="number" class="form-control" step="0.01" placeholder="0" />
