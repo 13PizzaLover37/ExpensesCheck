@@ -1,6 +1,6 @@
-using System.Diagnostics;
 using ExpensesCheck.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace ExpensesCheck.Controllers
 {
@@ -8,9 +8,13 @@ namespace ExpensesCheck.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        private readonly ExpensesCheck_DBContext _context;
+
+        // the context will be injected via dependency injection, that's already in ASP .Net under the hood
+        public HomeController(ILogger<HomeController> logger, ExpensesCheck_DBContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
@@ -27,7 +31,13 @@ namespace ExpensesCheck.Controllers
 
         public IActionResult CreateEditExpense() => View();
 
-        public IActionResult CreateEditExpenseForm(Expense model) => RedirectToAction("Expenses");
+        public IActionResult CreateEditExpenseForm(Expense model)
+        {
+            _context.Expenses.Add(model);
+            _context.SaveChanges();
+
+            return RedirectToAction("Expenses");
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
