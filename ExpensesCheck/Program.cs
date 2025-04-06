@@ -1,3 +1,6 @@
+using ExpensesCheck.Models;
+using Microsoft.EntityFrameworkCore;
+
 namespace ExpensesCheck
 {
     public class Program
@@ -8,6 +11,8 @@ namespace ExpensesCheck
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddDbContext<ExpensesCheck_DBContext>(options => options.UseInMemoryDatabase("ExpensesCheckDB"));
 
             var app = builder.Build();
 
